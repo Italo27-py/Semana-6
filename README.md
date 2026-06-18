@@ -136,134 +136,10 @@ Na prática, isso pode fazer o banco oferecer descontos, benefícios ou campanha
 
 A Random Forest ajustada apresentou melhor equilíbrio entre identificação de churn, redução de falsos positivos, precisão, F1-score e AUC.
 
----
-
-## 9. Diferenças metodológicas entre os projetos
-
-A comparação deve ser realizada com cuidado, pois os notebooks não utilizaram exatamente as mesmas configurações.
-
-| Elemento | Projeto 1 | Projeto 2 |
-|---|---|---|
-| Algoritmo | Random Forest | Árvore de Decisão |
-| Divisão dos dados | 80% treino e 20% teste | 70% treino e 30% teste |
-| `random_state` | 42 | 0 |
-| Codificação das categorias | One-Hot Encoding | Label Encoding |
-| Remoção de `customer_id` | Sim | Não corretamente |
-| Balanceamento das classes | `class_weight="balanced"` | `class_weight="balanced"` |
-| Uso de Pipeline | Sim | Não |
-
-Como os dois projetos utilizaram divisões diferentes dos dados, os modelos não foram avaliados exatamente sobre os mesmos clientes.
-
-Para uma comparação mais justa, os dois modelos deveriam utilizar:
-
-- a mesma divisão de treino e teste;
-- o mesmo `random_state`;
-- o mesmo pré-processamento;
-- as mesmas variáveis de entrada;
-- as mesmas métricas;
-- validação cruzada.
 
 ---
 
-## 10. Problemas encontrados no Projeto 1
-
-A conclusão escrita no notebook apresenta métricas diferentes das métricas mostradas nas células executadas.
-
-A conclusão menciona:
-
-- Acurácia de 86,8%;
-- Precisão de 78,2%;
-- Recall de 48,4%;
-- F1-score de 59,8%.
-
-Porém, a saída executada apresenta:
-
-- Acurácia de 86,4%;
-- Precisão de 78,6%;
-- Recall de 45,2%;
-- F1-score de 57,4%;
-- AUC de 85,7%.
-
-Esses valores devem ser corrigidos para que a conclusão fique de acordo com os resultados reais do notebook.
-
----
-
-## 11. Problemas encontrados no Projeto 2
-
-### Uso incorreto de `customer_id`
-
-O código cria uma versão da base sem a coluna `customer_id`:
-
-```python
-df = dataset.drop(columns=["customer_id"])
-```
-
-Porém, posteriormente, cria as variáveis de entrada utilizando novamente o DataFrame original:
-
-```python
-X = dataset.drop(columns=["churn"])
-```
-
-Dessa forma, a coluna `customer_id` continua sendo utilizada pelo modelo. Essa coluna deve ser removida, pois representa apenas um identificador.
-
-A correção recomendada é:
-
-```python
-X = dataset.drop(columns=["customer_id", "churn"])
-```
-
-### Uso de Label Encoding em variáveis nominais
-
-O Projeto 2 utiliza Label Encoding para transformar variáveis categóricas em números. Esse método pode criar uma ordem artificial entre categorias como França, Alemanha e Espanha.
-
-Para esse tipo de variável, o One-Hot Encoding utilizado no Projeto 1 é mais adequado.
-
-### Erro ao visualizar a árvore
-
-O notebook apresenta o erro:
-
-```text
-NameError: name 'plot_tree' is not defined
-```
-
-A função precisa ser importada antes de ser utilizada:
-
-```python
-from sklearn.tree import plot_tree
-```
-
----
-
-## 12. Pontos positivos de cada projeto
-
-### Projeto 1
-
-O Projeto 1 apresentou maior consistência metodológica porque:
-
-- removeu corretamente o identificador do cliente;
-- utilizou One-Hot Encoding;
-- organizou o pré-processamento e o modelo em uma Pipeline;
-- avaliou sinais de sobreajuste;
-- testou ajustes de hiperparâmetros;
-- comparou métricas antes e depois dos ajustes;
-- relacionou os resultados ao problema de negócio.
-
-### Projeto 2
-
-O Projeto 2 apresentou uma análise exploratória visual mais completa, incluindo:
-
-- relação entre idade e churn;
-- relação entre saldo e churn;
-- relação entre score de crédito e churn;
-- churn por país;
-- churn por gênero;
-- churn por quantidade de produtos;
-- importância das variáveis;
-- tentativa de visualização da árvore.
-
----
-
-## 13. Modelo com melhor resultado
+## 9. Modelo com melhor resultado
 
 Considerando o conjunto de métricas, a **Random Forest ajustada apresentou o melhor resultado geral**.
 
@@ -282,7 +158,7 @@ O modelo ajustado passou a reconhecer melhor os clientes com churn, tornando-se 
 
 ---
 
-## 14. Conclusão
+## 10. Conclusão
 
 Os dois modelos apresentaram comportamentos diferentes na previsão de churn.
 
@@ -303,20 +179,6 @@ Esses resultados demonstram maior equilíbrio entre a identificação de cliente
 Portanto, considerando o conjunto das métricas, a **Random Forest ajustada foi considerada o modelo mais adequado para o problema de churn**.
 
 Entretanto, para uma comparação definitiva, os dois algoritmos deveriam ser treinados e avaliados utilizando exatamente a mesma divisão dos dados, o mesmo pré-processamento e os mesmos critérios de avaliação.
-
----
-
-## 15. Melhorias futuras
-
-- Comparar os dois modelos usando a mesma divisão de treino e teste;
-- Utilizar validação cruzada;
-- Realizar busca de hiperparâmetros com `GridSearchCV` ou `RandomizedSearchCV`;
-- Testar outros algoritmos, como XGBoost, LightGBM ou Regressão Logística;
-- Ajustar o limiar de decisão do modelo;
-- Analisar a curva ROC e a curva Precision-Recall;
-- Avaliar o custo financeiro de falsos positivos e falsos negativos;
-- Remover definitivamente variáveis identificadoras;
-- Padronizar todo o pré-processamento dentro de uma Pipeline.
 
 ---
 
