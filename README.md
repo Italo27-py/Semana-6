@@ -191,3 +191,41 @@ Entretanto, para uma comparação definitiva, os dois algoritmos deveriam ser tr
 - Seaborn;
 - Scikit-learn;
 - Jupyter Notebook.
+
+
+## Comparação entre a MLP e a Random Forest
+
+Durante o primeiro treinamento, a rede neural MLP passou a prever apenas a classe majoritária, correspondente aos clientes que permaneceram no banco. Esse comportamento ocorreu devido ao desbalanceamento da base original.
+
+Para corrigir o problema, a base utilizada pela MLP foi reduzida de 10.000 para 4.000 registros, sendo selecionados:
+
+- 2.000 clientes que permaneceram no banco;
+- 2.000 clientes que abandonaram o banco.
+
+Além do balanceamento, as variáveis numéricas foram padronizadas antes do treinamento. Com essas alterações, a MLP passou a aprender os padrões das duas classes e apresentou melhores resultados.
+
+Após o treinamento das funções de ativação `ReLU`, `Tanh` e `Logistic`, a MLP com ativação **ReLU** apresentou o melhor desempenho e foi comparada com a **Random Forest ajustada**, que havia obtido os melhores resultados na etapa anterior do projeto.
+
+### Resultados
+
+| Modelo | Acurácia | Precisão | Recall | F1-score | AUC |
+|---|---:|---:|---:|---:|---:|
+| MLP com ReLU | 77,25% | 76,85% | 78,00% | 77,42% | 85,20% |
+| Random Forest ajustada | 84,30% | 60,80% | 63,60% | 62,20% | 86,40% |
+
+### Análise dos resultados
+
+A Random Forest apresentou maior acurácia e uma AUC ligeiramente superior, demonstrando melhor desempenho na quantidade total de classificações corretas.
+
+Por outro lado, a MLP com ReLU apresentou melhores resultados de precisão, recall e F1-score. Isso mostra que a rede neural conseguiu identificar melhor os clientes que realmente abandonaram o banco.
+
+A MLP também apresentou acurácia de 80,50% no treinamento e 77,25% no teste. A pequena diferença entre esses valores indica que o modelo conseguiu generalizar de forma satisfatória, sem sinais fortes de sobreajuste.
+
+### Conclusão
+
+A Random Forest apresentou o melhor resultado em acurácia geral, enquanto a MLP foi superior na identificação dos casos de churn.
+
+Portanto, a Random Forest é mais indicada quando a prioridade é obter a maior quantidade total de classificações corretas. Já a MLP é mais adequada quando o principal objetivo é identificar clientes com risco de abandonar o banco.
+
+É importante destacar que a MLP foi treinada com uma base reduzida e balanceada, diferente da distribuição original dos dados. Essa alteração melhorou o aprendizado da rede, mas deve ser considerada ao interpretar a comparação entre os modelos.
+
